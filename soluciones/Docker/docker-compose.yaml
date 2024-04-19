@@ -1,19 +1,14 @@
-# Use postgres/example user/password credentials
 version: '3.9'
 
 services:
 
   db:
-    image: postgres
+    image: postgres:latest
+
     restart: unless-stopped
-    # set shared memory limit when using docker-compose
+
     shm_size: 128mb
-    # or set shared memory limit when deploy via swarm stack
-    #volumes:
-    #  - type: tmpfs
-    #    target: /dev/shm
-    #    tmpfs:
-    #      size: 134217728 # 128*2^20 bytes = 128Mb
+
     environment:
 
       POSTGRES_DB: db
@@ -21,15 +16,14 @@ services:
       POSTGRES_PASSWORD: pass
 
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db_v:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
     container_name: psql
 
     networks:
       private:
         ipv4_address: 10.5.0.255
-
-    entrypoint:  sh -c "./init-database.sh"
       
   adminer:
     image: adminer
@@ -39,6 +33,8 @@ services:
     networks:
       - private
 
+  ##ADMINER IS A PLACERHOLDER FOR THE PYTHON APPLICATION
+
 networks: 
   private:
     driver: bridge
@@ -47,6 +43,7 @@ networks:
      config:
        - subnet: 10.5.0.0/16
          gateway: 10.5.0.1
+
   public:
     driver: bridge
     name: visiblenet
@@ -56,4 +53,4 @@ networks:
          gateway: 192.168.0.1
 
 volumes:
-  postgres_data:
+  db_v:
