@@ -31,22 +31,19 @@ services:
     image: adminer
     restart: unless-stopped
     ports:
-      - 8081:8080
+      - 8082:8080
     networks:
       - private
-
-  fastapi:
-    image: fast-py-api:0.2
-    build:
-      context: api
-      dockerfile: Dockerfile
-    container_name: FastApi
+  
+  api:
+    image: ralonsostemdo/python-api:latest
     ports:
-      - 8080:8000
+      - "8080:8000"
+      
     networks:
       - private
     volumes:
-      - ./api/requirements.txt:/app/requirements.txt
+      - ../api/app:/app
 
     entrypoint: pip install -r /app/requirements.txt
 

@@ -1,9 +1,11 @@
-FROM python:3.8.10-slim
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
-WORKDIR /app
+COPY ./requirements.txt requirements.txt
 
-RUN /usr/local/bin/python -m pip install --upgrade pip
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+ 
+COPY ./app /app
 
-COPY ./* .
+RUN echo $(ls -1 /tmp/dir)
 
-EXPOSE 8000
+CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0"]

@@ -1,9 +1,8 @@
 from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException
-from schema import Persona
 from sqlalchemy.orm import Session
 
-import model, schema, crud
+import schemas, crud
 from db import SessionLocal
 
 app = FastAPI()
@@ -32,14 +31,14 @@ async def read_persona(persona_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/personas")
-async def create_persona(persona: schema.PersonaCreate, db: Session = Depends(get_db)):
+async def create_persona(persona: schemas.PersonaCreate, db: Session = Depends(get_db)):
     db_persona = crud.create_persona(db, persona)
     if db_persona is None:
         raise HTTPException(status_code=404, detail="Persona no encontrada")
     return db_persona
 
 @app.put("/personas/{persona_id}")
-async def update_persona(persona_id: int, persona_update: schema.PersonaUpdate, db: Session = Depends(get_db)):
+async def update_persona(persona_id: int, persona_update: schemas.PersonaUpdate, db: Session = Depends(get_db)):
     db_persona = crud.update_persona(db, persona_id, persona_update)
     if db_persona is None:
         raise HTTPException(status_code=404, detail="Persona no encontrada")
