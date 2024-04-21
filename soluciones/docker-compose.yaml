@@ -43,7 +43,7 @@ services:
     networks:
       - private
     volumes:
-      - ../api/app:/app
+      - ./api/app:/app
 
     entrypoint: pip install -r /app/requirements.txt
 
